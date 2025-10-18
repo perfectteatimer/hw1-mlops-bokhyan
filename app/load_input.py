@@ -1,11 +1,17 @@
 import pandas as pd
 from pathlib import Path
-from .utils import INPUT_DIR
 
 
-def load_test():
-    path = INPUT_DIR / "test.csv"
-    if not path.exists():
-        raise FileNotFoundError("Не найден /app/input/test.csv")
-    df = pd.read_csv(path)
-    return df
+def main():
+    in_dir = Path("/app/input")
+    work = Path("/app/work")
+    work.mkdir(parents=True, exist_ok=True)
+    p = in_dir / "test.csv"
+    if not p.exists():
+        raise FileNotFoundError("на нашелся /app/input/test.csv")
+    df = pd.read_csv(p)
+    df.to_parquet(work / "test.parquet", index=False)
+
+
+if __name__ == "__main__":
+    main()

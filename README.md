@@ -1,28 +1,52 @@
-# Kaggle nlp hw1 
+# HW1-MLOPS-BOKHYAN
 
-## Start
+```
+HW1-MLOPS-BOKHYAN
+├── app
+│   ├── load_input.py
+│   ├── preprocess.py
+│   ├── predict.py
+│   ├── save_output.py
+│   ├── run.py
+│   └── utils.py
+├── artifacts
+│   └── catboost_model.cbm     
+├── input                      # монтируется как /app/input
+├── output                     # монтируется как /app/output
+├── work                       # промежуточные файлы внутри контейнера
+├── Dockerfile
+├── requirements.txt
+└── README.md
+```
 
-1. Собрать образ:
-    docker build -t hw1-mlops-bokhyan .
+## Что делает сервис
+- load_input → preprocess → predict → save_output
+- читает `./input/test.csv` который создается перед запуском (нужно будет положить туда датасет)
+- препроцессинг: `transaction_time` → `hour/dayofweek/month`, дальше удаляет исходную дату
+- инференс катбуста (`artifacts/catboost_model.cbm`)
+- сохраняет:
+  - `./output/sample_submission.csv` (колонки: `row_id`, `target`)
+  - `./output/feature_importances_top5.json`
+  - `./output/score_density.png`
 
-2. Подготовка папок и test.csv:
-   mkdir -p output
-
-3. Запуск:
-   docker run --rm \
-  -v $PWD/input:/app/input \
-  -v $PWD/output:/app/output \
+## Как запустить
+```bash
+mkdir -p input output
+cp /путь/к/test.csv ./input/test.csv
+docker build -t hw1-mlops-bokhyan .
+docker run --rm \
+  -v $(pwd)/input:/app/input \
+  -v $(pwd)/output:/app/output \
   hw1-mlops-bokhyan
+```
+
+## Заметки
+- Не забудьте положить test.csv
 
 
-4. Результаты будут в ./output:
-   - sample_submission.csv
-   - importances.json        (топ-5 фич)
-   - scores_density.png      (плотность скоров)
 
-## Детали
-- Сервис состоит из скриптов:
-  app/load_input.py, app/preprocess.py, app/predict.py, app/save_output.py, app/run.py
-- Модель и прочее лежат в ./artifacts (я предобучил их во время дз)
-- Трейн датасет я уже подгрузил, тк на нем надо инферить
-- Результатам не удивляться, сорева такая :)
+
+
+
+
+
