@@ -32,7 +32,11 @@ HW1-MLOPS-BOKHYAN
 ## Как запустить
 ```bash
 mkdir -p input output
+```
+```bash
 cp /путь/к/test.csv ./input/test.csv
+```
+```bash
 docker build -t hw1-mlops-bokhyan .
 docker run --rm \
   -v $(pwd)/input:/app/input \
